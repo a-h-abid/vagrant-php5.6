@@ -13,7 +13,7 @@ echo "--- Installing base packages ---"
 sudo apt-get install -y vim curl python-software-properties
 
 echo "--- Package For PHP 5.6 ---"
-sudo add-apt-repository ppa:ondrej/php5-5.6
+sudo add-apt-repository -y ppa:ondrej/php5-5.6
 
 echo "--- Updating packages list ---"
 sudo apt-get update
@@ -37,7 +37,9 @@ echo "--- What developer codes without errors turned on? Not you, master. ---"
 sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
 sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
 
+echo "-- Configure Apache"
 sudo sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+sudo sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www/' /etc/apache2/sites-enabled/000-default.conf
 
 echo "--- Restarting Apache ---"
 sudo service apache2 restart
