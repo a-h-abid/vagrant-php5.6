@@ -19,7 +19,7 @@ echo "--- Updating packages list ---"
 sudo apt-get update
 
 echo "--- Installing PHP-specific packages ---"
-sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server-5.5 php5-mysql git-core
+sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server-5.5 php5-mysql php5-sqlite git-core
 
 echo "--- Installing and configuring Xdebug ---"
 sudo apt-get install -y php5-xdebug
@@ -58,5 +58,12 @@ sudo wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86
 sudo tar xzf ioncube_loaders_lin_x86-64.tar.gz
 sudo mkdir -p /opt/sp/php5.6/lib/php/extensions/ioncube/
 sudo cp ioncube/ioncube_loader_lin_5.6.so /opt/sp/php5.6/lib/php/extensions/ioncube/
-sudo bash -c 'echo "zend_extension=/opt/sp/php5.6/lib/php/extensions/ioncube/ioncube_loader_lin_5.6.so" > /etc/php5/conf.d/0-ioncube.ini'
+sudo bash -c 'echo "zend_extension=/opt/sp/php5.6/lib/php/extensions/ioncube/ioncube_loader_lin_5.6.so" > /etc/php5/apache2/conf.d/0-ioncube.ini'
+sudo service apache2 restart
+
+echo "-- Installing Z-Ray for Apache --"
+cd /usr/local
+sudo wget http://downloads.zend.com/zray/0112/Z-Ray_Linux.tar.gz
+sudo tar xzf Z-Ray_Linux.tar.gz
+sudo bash ./ZRay-Installer/install.sh
 sudo service apache2 restart
