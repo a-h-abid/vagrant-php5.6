@@ -41,16 +41,12 @@ echo "-- Configure Apache"
 sudo sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 sudo sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www/' /etc/apache2/sites-enabled/000-default.conf
 
-echo "--- Restarting Apache ---"
-sudo service apache2 restart
 
 echo "--- Composer is the future. But you knew that, did you master? Nice job. ---"
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 
 # Other Suffs
-
-echo "--- All set to go! Would you like to play a game? ---"
 
 echo "-- Installing IonCube --"
 cd /usr/local
@@ -59,11 +55,26 @@ sudo tar xzf ioncube_loaders_lin_x86-64.tar.gz
 sudo mkdir -p /opt/sp/php5.6/lib/php/extensions/ioncube/
 sudo cp ioncube/ioncube_loader_lin_5.6.so /opt/sp/php5.6/lib/php/extensions/ioncube/
 sudo bash -c 'echo "zend_extension=/opt/sp/php5.6/lib/php/extensions/ioncube/ioncube_loader_lin_5.6.so" > /etc/php5/apache2/conf.d/0-ioncube.ini'
-sudo service apache2 restart
 
 echo "-- Installing Z-Ray for Apache --"
-cd /usr/local
-sudo wget http://downloads.zend.com/zray/0112/Z-Ray_Linux.tar.gz
-sudo tar xzf Z-Ray_Linux.tar.gz
-sudo bash ./ZRay-Installer/install.sh
+sudo -u
+cd /opt
+sudo wget http://downloads.zend.com/zray/0112/zray-php-102775-php5.6.15-linux-debian7-amd64.tar.gz
+sudo tar xzf zray-php-102775-php5.6.15-linux-debian7-amd64.tar.gz -C /opt
+mv /opt/zray-php-102775-php5.6.15-linux-debian7-amd64/zray /opt/zray
+cp /opt/zray/zray-ui.conf /etc/apache2/sites-available
+a2ensite zray-ui.conf
+ln -sf /opt/zray/zray.ini /etc/php5/apache2/conf.d/zray.ini
+ln -sf /opt/zray/zray.ini /etc/php5/cli/conf.d/zray.ini
+
+# Note:  The exact location of the extensions may vary depending on the specific distro you're installing on.
+ln -sf /opt/zray/lib/zray.so /usr/lib/php5/20131226/zray.so # Debian 8
+#ln -sf /opt/zray/lib/zray.so /usr/lib/php5/20121212/zray.so # Ubuntu 14.04
+
+chown -R www-data:www-data /opt/zray
+
+echo "--- Restarting Apache ---"
 sudo service apache2 restart
+
+cd /var/www
+php -v
